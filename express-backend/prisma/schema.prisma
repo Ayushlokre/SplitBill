@@ -21,12 +21,13 @@ model User {
   updatedAt     DateTime  @updatedAt
   
   // Relations
-  accounts      Account[]
-  sessions      Session[]
-  groups        GroupMember[]
-  expenses      Expense[]
-  expenseSplits ExpenseSplit[]
-  payments      Payment[]
+  accounts       Account[]
+  sessions       Session[]
+  groups         GroupMember[]
+  expenses       Expense[]
+  expenseSplits  ExpenseSplit[]
+  paymentsFrom   Payment[] @relation("PaymentFromUser")
+  paymentsTo     Payment[] @relation("PaymentToUser")
 }
 
 model Account {
@@ -101,6 +102,7 @@ model Expense {
   description String
   amount      Float
   currency    String   @default("USD")
+  category    String   @default("other") // food, transport, accommodation, entertainment, utilities, other
   date        DateTime @default(now())
   paidById    String
   groupId     String
@@ -132,10 +134,11 @@ model Payment {
   fromUserId  String
   toUserId    String
   expenseId   String?
-  groupId     String?
+  groupId     String
   settled     Boolean  @default(false)
   createdAt   DateTime @default(now())
   
-  fromUser    User     @relation(fields: [fromUserId], references: [id], onDelete: Cascade)
+  fromUser    User     @relation("PaymentFromUser", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser      User     @relation("PaymentToUser", fields: [toUserId], references: [id], onDelete: Cascade)
   expense     Expense? @relation(fields: [expenseId], references: [id], onDelete: SetNull)
 }
