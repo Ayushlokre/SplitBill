@@ -101,7 +101,7 @@ model Expense {
   id          String   @id @default(cuid())
   description String
   amount      Float
-  currency    String   @default("USD")
+  currency    String   @default("INR")
   category    String   @default("other") // food, transport, accommodation, entertainment, utilities, other
   date        DateTime @default(now())
   paidById    String
@@ -131,6 +131,7 @@ model ExpenseSplit {
 model Payment {
   id          String   @id @default(cuid())
   amount      Float
+  currency    String   @default("INR")
   fromUserId  String
   toUserId    String
   expenseId   String?

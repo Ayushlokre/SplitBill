@@ -280,7 +280,7 @@ app.post('/api/groups/:id/invite', authenticateToken, async (req, res) => {
 // Expense Routes
 app.post('/api/groups/:id/expenses', authenticateToken, async (req, res) => {
   try {
-    const { description, amount, paidById, splitType, splits, category } = req.body;
+    const { description, amount, paidById, splitType, splits, category, currency } = req.body;
     const groupId = req.params.id;
 
     // Verify user is a member of the group
@@ -301,6 +301,7 @@ app.post('/api/groups/:id/expenses', authenticateToken, async (req, res) => {
       data: {
         description,
         amount: parseFloat(amount),
+        currency: currency || 'INR',
         category: category || 'other',
         groupId,
         paidById,
@@ -519,7 +520,7 @@ app.get('/api/groups/:id/balance', authenticateToken, async (req, res) => {
 // Record a payment
 app.post('/api/groups/:id/payments', authenticateToken, async (req, res) => {
   try {
-    const { fromUserId, toUserId, amount } = req.body;
+    const { fromUserId, toUserId, amount, currency } = req.body;
     const groupId = req.params.id;
 
     if (!fromUserId || !toUserId || !amount) {
@@ -540,7 +541,8 @@ app.post('/api/groups/:id/payments', authenticateToken, async (req, res) => {
         groupId,
         fromUserId,
         toUserId,
-        amount: parseFloat(amount)
+        amount: parseFloat(amount),
+        currency: currency || 'INR'
       },
       include: {
         fromUser: {
